@@ -8,77 +8,92 @@ NUM_GENES = 11
 
 KEY = '81WmrH1dHrlpZ3Qj2RF4HRr9Qv8gRke6SmF2zNLjHJ3v6wzIYE'
 
-NUM_CHROMOSOMES = 20
+NUM_CHROMOSOMES = 10
 POPULATION_SIZE = (NUM_CHROMOSOMES, NUM_GENES)
 MATING_POOL_SIZE = 8
 
 
 
 def get_fitness(population):
-    fitness_arr = np.zeros((NUM_CHROMOSOMES, 1))
+    fitness_arr = np.zeros(NUM_CHROMOSOMES)
     for i in range(NUM_CHROMOSOMES):
         # print(population[i])
 
-        print(population[i, :])
+        # print(population[i, :])
 
         # err = C.get_errors(KEY, list(population[i, :]))
-        err = [2662475751412.1533, 2386431631920.067]
+        # err = [2662475751412.1533, 2386431631920.067]
+        err = [np.random.randint(10), np.random.randint(10)]
         print("err: ", err)
 
         fitness_arr[i] = 0.7*err[0] + err[1]
     return fitness_arr
 
+# def mating_pool(population, fitness):
+#     arr = np.concatenate((population, fitness), axis = 1)
+#     arr = arr[np.argsort(arr[:, NUM_GENES])]
+
+#     print("arr:")
+#     print(arr)
+
+#     prob = np.arange(1.0, NUM_CHROMOSOMES + 1, 1.0)
+
+#     prob = np.reciprocal(prob)
+#     prob = prob/np.sum(prob)
+
+#     print("prob: ")
+#     print(prob)
+
+#     pool = arr[np.random.choice(
+#         NUM_CHROMOSOMES, size=MATING_POOL_SIZE, replace=False, p = prob
+#     )]
+
+#     print("pool: ")
+#     print(pool)
+
+#     # print("Pool: ", pool)
+#     return(pool)
+
+
 def mating_pool(population, fitness):
-    arr = np.concatenate((population, fitness), axis = 1)
-    arr = arr[np.argsort(arr[:, NUM_GENES])]
-    # print("!!!!!!!!!", population.shape)
-    # print("!!!!!!!!!", fitness.shape)
-    # print("!!!!!!!!!", arr.shape)
-    # print("!!!!!!!!!", arr)
+    parents = np.empty((NUM_CHROMOSOMES, population.shape[1]))
 
-    prob = np.arange(1.0, NUM_CHROMOSOMES + 1, 1.0)
+    print("BAD: ")
+    print(population)
 
-    prob = np.reciprocal(prob)
-    prob = prob/np.sum(prob)
+    for i in range(NUM_CHROMOSOMES):
+        max_fitness_idx = np.where(fitness == np.max(fitness))
 
-    pool = arr[np.random.choice(
-        NUM_CHROMOSOMES, size=MATING_POOL_SIZE, replace=False, p = prob
-    )]
+        max_fitness_idx = max_fitness_idx[0][0]
+        parents[i, :] = population[max_fitness_idx, :]
 
-    # print("Pool: ", pool)
-    return(pool)
+        fitness[max_fitness_idx] = -999999999
 
+    print("GOOD")
+    print(parents)
+    return parents
 
 # single point crossover
 def crossover(parents, offspring_size):
     offsprings = np.empty(offspring_size)
 
     crossover_point = np.uint8(offspring_size[1]/2)
-    # print("blah: ", crossover_point)
-    # print("abcd ", offspring_size)
-    # print("fml: ", parents.shape)
 
     for i in range(offspring_size[0]):
         parent_1 = i % parents.shape[0]
         parent_2 = (i+1) % parents.shape[0]
-        # print("1: ", parent_1)
-        # print("2: ", parent_2)
-
-        # print("parents: ", parents.shape)
-        # print("offspring: ", offsprings.shape)
 
         offsprings[i, 0:crossover_point] = parents[parent_1, 0:crossover_point]
-        # print("11: ", parents[parent_1, 0:crossover_point].shape)
-        # print("21: ", parents[parent_2, crossover_point:].shape)
-        # print("o: ", offsprings)
-        offsprings[i, crossover_point:] = parents[parent_2, crossover_point: -1]
+        print(offsprings[i, crossover_point:])
+        print(parents[parent_2, crossover_point:])
+        offsprings[i, crossover_point:] = parents[parent_2, crossover_point:]
+        offsprings[i, 0: ] = np.divide((np.multiply(parents[parent_1,0: ],parent_2+1)  +  np.multiply(parents[parent_1, 0:],parent_1+1)),parent_1+parent_2+2)[0:11]
 
+        
     return offsprings
 
 def mutate_vector(arr):
 
-    # random_arr = np.random.uniform(-1.0, 1.0, arr.shape)
-    # arr += random_arr
     for i in arr:
         i += np.random.uniform(-0.25, 0.25)*i
     return arr
