@@ -2,16 +2,18 @@ import client as C
 
 import numpy as np
 
+import random
+
 #### CONSTANTS ####
-OVERFIT_ERR = [0.0, -1.45799022e-12, -2.28980078e-13,  4.62010753e-11, -1.75214813e-10, -1.83669770e-15,  8.52944060e-16,  2.29423303e-05, -2.04721003e-06, -1.59792834e-08,  9.98214034e-10]
+OVERFIT_ERR = [0.0, -1.45799022e-12, -2.28980078e-13,  4.62010753e-11, -1.75214813e-10, -
+    1.83669770e-15,  8.52944060e-16,  2.29423303e-05, -2.04721003e-06, -1.59792834e-08,  9.98214034e-10]
 NUM_GENES = 11
 
-KEY = '81WmrH1dHrlpZ3Qj2RF4HRr9Qv8gRke6SmF2zNLjHJ3v6wzIYE'
+KEY = 'PRz8goBaZsoe41TSChLpab9dgyEXThblG2pE44gE2Ia5nqMJGv'
 
 NUM_CHROMOSOMES = 10
 POPULATION_SIZE = (NUM_CHROMOSOMES, NUM_GENES)
 MATING_POOL_SIZE = 8
-
 
 
 def get_fitness(population):
@@ -21,9 +23,9 @@ def get_fitness(population):
 
         # print(population[i, :])
 
-        # err = C.get_errors(KEY, list(population[i, :]))
+        err = C.get_errors(KEY, list(population[i, :]))
         # err = [2662475751412.1533, 2386431631920.067]
-        err = [np.random.randint(10), np.random.randint(10)]
+        # err = [np.random.randint(10), np.random.randint(10)]
         print("err: ", err)
 
         fitness_arr[i] = 0.7*err[0] + err[1]
@@ -58,8 +60,8 @@ def get_fitness(population):
 def mating_pool(population, fitness):
     parents = np.empty((NUM_CHROMOSOMES, population.shape[1]))
 
-    print("BAD: ")
-    print(population)
+    # print("BAD: ")
+    # print(population)
 
     for i in range(NUM_CHROMOSOMES):
         max_fitness_idx = np.where(fitness == np.max(fitness))
@@ -69,11 +71,13 @@ def mating_pool(population, fitness):
 
         fitness[max_fitness_idx] = -999999999
 
-    print("GOOD")
-    print(parents)
+    # print("GOOD")
+    # print(parents)
     return parents
 
 # single point crossover
+
+
 def crossover(parents, offspring_size):
     offsprings = np.empty(offspring_size)
 
@@ -87,13 +91,28 @@ def crossover(parents, offspring_size):
         print(offsprings[i, crossover_point:])
         print(parents[parent_2, crossover_point:])
         offsprings[i, crossover_point:] = parents[parent_2, crossover_point:]
-        offsprings[i, 0: ] = np.divide((np.multiply(parents[parent_1,0: ],parent_2+1)  +  np.multiply(parents[parent_1, 0:],parent_1+1)),parent_1+parent_2+2)[0:11]
+        # offsprings[i, 0: ] = np.divide((np.multiply(parents[parent_1,0: ],parent_2+1)  +  np.multiply(parents[parent_1, 0:],parent_1+1)),parent_1+parent_2+2)[0:11]
 
-        
     return offsprings
 
-def mutate_vector(arr):
 
-    for i in arr:
-        i += np.random.uniform(-0.25, 0.25)*i
-    return arr
+def mutate_vector(arr):
+    arr2 = arr.copy()
+    # print(arr.shape)
+    # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+    # print(arr)
+    # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+    for i,val in enumerate(arr):
+        # print(i)
+        for j,val2 in enumerate(val):
+            # print('NNADSIOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
+            # print(j)
+            # print('asiduhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
+            # j += random.uniform(-0.25, 0.25)*j
+            arr2[i][j] = random.uniform(-0.25, 0.25)*val2 + val2
+            if val2 == 0:
+                arr2[i][j] = random.uniform(-0.0000000001, 0.0000000001)
+            # print(j)
+        # print(arr2[i])
+    # print(arr2)
+    return arr2
