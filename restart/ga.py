@@ -87,10 +87,16 @@ def create_offsprings(mating_pool):
         probs.append((total_error - i[-1]) /
                      (total_error*(MATING_POOL_SIZE-1)))
 
+    crossover_elem = []
+    mutate_elem = []
+
     for i in range(10):
         [parent_1,parent_2] = pool[np.random.choice(
             np.arange(0, MATING_POOL_SIZE), 2, replace=False, p=probs)]
         # parent_2 = pool[np.random.randint(MATING_POOL_SIZE)]
+
+        crossover_elem.append(parent_1)
+        crossover_elem.append(parent_2)
 
         child1, child2 = crossover(parent_1, parent_2)
 
@@ -98,8 +104,23 @@ def create_offsprings(mating_pool):
         child1 = mutate_child(child1)
         child2 = mutate_child(child2)
 
+        mutate_elem.append(child1)
+        mutate_elem.append(child2)
+
         children.append(child1)
         children.append(child2)
+
+
+    f.write("\nAfter Crossover: \n")
+
+    for i in crossover_elem:
+        write_file(i)
+
+
+    f.write("\nAfter Mutation: \n")
+
+    for i in mutate_elem:
+        write_file(i)
 
     # print("\n Children:\n", children)
     return children

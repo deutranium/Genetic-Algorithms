@@ -8,6 +8,10 @@ MATING_POOL_SIZE = 6
 
 SECRET_KEY = '81WmrH1dHrlpZ3Qj2RF4HRr9Qv8gRke6SmF2zNLjHJ3v6wzIYE'
 
+f = open("history.txt", "w")
+
+def write_file(arr):
+    f.write(", ".join(str(arr).split()) + "\n")
 
 OVERFIT_ERR = [0.0, -1.45799022e-12, -2.28980078e-13,  4.62010753e-11, -1.75214813e-10, -1.83669770e-15,  8.52944060e-16,  2.29423303e-05, -2.04721003e-06, -1.59792834e-08,  9.98214034e-10]
 
