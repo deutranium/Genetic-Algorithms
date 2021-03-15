@@ -4,9 +4,10 @@ import client as C
 import random
 
 def calculate_fitness(population):
-    fitness = np.empty((NUM_POPULATION, 3))
+    rows, cols = population.shape
+    fitness = np.empty((rows, 3))
 
-    for i in range(NUM_POPULATION):
+    for i in range(rows):
         # error = C.get_errors(SECRET_KEY, list(population[i]))
         error = [2662475751412.1533, 2386431631920.067]
 
