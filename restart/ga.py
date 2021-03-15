@@ -10,10 +10,12 @@ def calculate_fitness(population):
         # error = C.get_errors(SECRET_KEY, list(population[i]))
         error = [2662475751412.1533, 2386431631920.067]
 
-        this_fit = error[0] + error[1] # 0: train, 1: val
+        this_fit = error[0] + 0.7 * error[1] # 0: train, 1: val
         fitness[i] = [error[0], error[1], this_fit]
         # fitness[i] = np.random.randint(10)
 
+    print(population.shape)
+    print(fitness.shape)
     fit_pop = np.column_stack((population, fitness))
 
     # pop sorted by fitness in increasing order
@@ -90,7 +92,7 @@ def create_offsprings(mating_pool):
     crossover_elem = []
     mutate_elem = []
 
-    for i in range(10):
+    for i in range(7):
         [parent_1,parent_2] = pool[np.random.choice(
             np.arange(0, MATING_POOL_SIZE), 2, replace=False, p=probs)]
         # parent_2 = pool[np.random.randint(MATING_POOL_SIZE)]

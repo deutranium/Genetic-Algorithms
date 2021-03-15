@@ -1,7 +1,7 @@
 from constants import *
 from ga import *
 
-population = INITIAL_POPULATION
+population = INITIAL_POPULATION[:15]
 
 fitness = calculate_fitness(population)
 
@@ -51,7 +51,7 @@ while(input() != "NO"):
     # print("Offsprings: ", offsprings)
 
 
-    new_gen = create_gen(offsprings, fitness)
+    new_gen = create_gen(np.array(offsprings), fitness)
 
 
     fitness = new_gen
