@@ -7,13 +7,17 @@ def calculate_fitness(population):
     rows, cols = population.shape
     fitness = np.empty((rows, 3))
 
+
     for i in range(rows):
         # error = C.get_errors(SECRET_KEY, list(population[i]))
         error = [2662475751412.1533, 2386431631920.067]
 
-        this_fit = error[0] + error[1] # 0: train, 1: val
+        # error = [np.random.randint(10), np.random.randint(10)]
+        # this_fit = error[0] + error[1]
+
+        this_fit = 0.7*error[0] + error[1] # 0: train, 1: val
+        # this_fit = np.random.randint(10)
         fitness[i] = [error[0], error[1], this_fit]
-        fitness[i] = np.random.randint(10)
 
     fit_pop = np.column_stack((population, fitness))
 
@@ -61,13 +65,13 @@ def mutate_child(child):
     for idx, val in enumerate(child):
         prob = random.uniform(0, 1)
 
-        if(prob <= 0.3):
+
+        if(prob <= 0.6):
+            if val == 0:
+                val += random.uniform(-1e-20, 1e-20)
+            else:
                 val += random.uniform(-0.7, 0.7)*val
         
-        add_prob = random.uniform(0,1)
-
-        if(add_prob <= 0.6):
-            val += random.uniform(-1e-8, 1e-8)
         
         child[idx] = val
     return child
@@ -91,19 +95,29 @@ def create_offsprings(mating_pool):
         probs.append((total_error - i[-1]) /
                      (total_error*(MATING_POOL_SIZE-1)))
 
+    parents_selected = []
     crossover_elem = []
     mutate_elem = []
 
     for i in range(10):
+        # rand_prob = random.random()
+
+        # if rand_prob <= 0.5 :
         [parent_1,parent_2] = pool[np.random.choice(
             np.arange(0, MATING_POOL_SIZE), 2, replace=False, p=probs)]
+        # else:
+        #     parent_1 = pool[np.random.choice(
+        #         np.arange(0, MATING_POOL_SIZE), 1, replace=False, p=probs)][0]
+        #     parent_2 = pool[5]
+        #     print("hehe")
         # parent_2 = pool[np.random.randint(MATING_POOL_SIZE)]
 
-        crossover_elem.append(parent_1)
-        crossover_elem.append(parent_2)
+        parents_selected.append([parent_1, parent_2])
 
         child1, child2 = crossover(parent_1, parent_2)
 
+        crossover_elem.append(child1)
+        crossover_elem.append(child2)
 
         child1 = mutate_child(child1)
         child2 = mutate_child(child2)
@@ -114,17 +128,21 @@ def create_offsprings(mating_pool):
         children.append(child1)
         children.append(child2)
 
+    print("Parents selected: \n")
+    for i in parents_selected:
+        print(i)
 
-    f.write("\nAfter Crossover: \n")
+    print("\nAfter Crossover: \n")
 
     for i in crossover_elem:
-        write_file(i)
+        print(i)
 
 
-    f.write("\nAfter Mutation: \n")
+    print("\nAfter Mutation: \n")
 
     for i in mutate_elem:
-        write_file(i)
+        print(i)
+
 
     # print("\n Children:\n", children)
     return children
@@ -144,8 +162,8 @@ def create_gen(offsprings, fitness):
     # sort and get first NUM_POPULATION elements
     new_pop = new_pop[np.argsort(new_pop[:,-1])][:NUM_POPULATION]
 
-    print("VRFBEDVSCHTNUYNTBVFCD")
-    print(select_mating_pool(new_pop))
+    # print("VRFBEDVSCHTNUYNTBVFCD")
+    # print(select_mating_pool(new_pop))
     return new_pop
 
 
