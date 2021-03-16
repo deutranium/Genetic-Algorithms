@@ -11,12 +11,10 @@ def calculate_fitness(population):
         # error = C.get_errors(SECRET_KEY, list(population[i]))
         error = [2662475751412.1533, 2386431631920.067]
 
-        this_fit = error[0] + 0.7 * error[1] # 0: train, 1: val
+        this_fit = error[0] + error[1] # 0: train, 1: val
         fitness[i] = [error[0], error[1], this_fit]
-        # fitness[i] = np.random.randint(10)
+        fitness[i] = np.random.randint(10)
 
-    print(population.shape)
-    print(fitness.shape)
     fit_pop = np.column_stack((population, fitness))
 
     # pop sorted by fitness in increasing order
@@ -31,7 +29,12 @@ def calculate_fitness(population):
 
 def select_mating_pool(fit_pop):
     # gets the best MATING_POOL_SIZE number of elements for the mating pool
+    # print()
+    # print(fit_pop)
+    # print()
     mating_pool = fit_pop[:MATING_POOL_SIZE]
+    # print("!!!!!!!!!!")
+    # print(mating_pool)
 
     return mating_pool
 
@@ -42,7 +45,7 @@ def crossover(parent_1, parent_2):
     child2 = np.empty(11)
 
     u = random.random()
-    n_c = 3
+    n_c = 2
 
     # refer https://engineering.purdue.edu/~sudhoff/ee630/Lecture04.pdf
 
@@ -62,11 +65,13 @@ def mutate_child(child):
     for idx, val in enumerate(child):
         prob = random.uniform(0, 1)
 
-        if(prob <= 0.6):
-            if(val == 0):
-                val += random.uniform(-1e-10, 1e-10)
-            else:
-                val += random.uniform(-0.5, 0.5)*val
+        if(prob <= 0.3):
+                val += random.uniform(-0.7, 0.7)*val
+        
+        add_prob = random.uniform(0,1)
+
+        if(add_prob <= 0.6):
+            val += random.uniform(-1e-8, 1e-8)
         
         child[idx] = val
     return child
@@ -93,7 +98,7 @@ def create_offsprings(mating_pool):
     crossover_elem = []
     mutate_elem = []
 
-    for i in range(7):
+    for i in range(10):
         [parent_1,parent_2] = pool[np.random.choice(
             np.arange(0, MATING_POOL_SIZE), 2, replace=False, p=probs)]
         # parent_2 = pool[np.random.randint(MATING_POOL_SIZE)]
@@ -131,15 +136,20 @@ def create_offsprings(mating_pool):
 
 def create_gen(offsprings, fitness):
 
-    fitness = fitness[:4]
 
-    child_fitness = calculate_fitness(offsprings)
+    fitness = fitness[:5]
+
+    child_fitness = calculate_fitness(offsprings)[:15]
 
     new_pop = np.concatenate((fitness, child_fitness))
+
+    np.random.shuffle(new_pop)
 
     # sort and get first NUM_POPULATION elements
     new_pop = new_pop[np.argsort(new_pop[:,-1])][:NUM_POPULATION]
 
+    print("VRFBEDVSCHTNUYNTBVFCD")
+    print(select_mating_pool(new_pop))
     return new_pop
 
 
