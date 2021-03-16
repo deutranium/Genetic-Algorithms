@@ -95,29 +95,19 @@ def create_offsprings(mating_pool):
         probs.append((total_error - i[-1]) /
                      (total_error*(MATING_POOL_SIZE-1)))
 
-    parents_selected = []
     crossover_elem = []
     mutate_elem = []
 
     for i in range(4):
-        # rand_prob = random.random()
-
-        # if rand_prob <= 0.5 :
         [parent_1,parent_2] = pool[np.random.choice(
             np.arange(0, MATING_POOL_SIZE), 2, replace=False, p=probs)]
-        # else:
-        #     parent_1 = pool[np.random.choice(
-        #         np.arange(0, MATING_POOL_SIZE), 1, replace=False, p=probs)][0]
-        #     parent_2 = pool[5]
-        #     print("hehe")
         # parent_2 = pool[np.random.randint(MATING_POOL_SIZE)]
 
-        parents_selected.append([parent_1, parent_2])
+        crossover_elem.append(parent_1)
+        crossover_elem.append(parent_2)
 
         child1, child2 = crossover(parent_1, parent_2)
 
-        crossover_elem.append(child1)
-        crossover_elem.append(child2)
 
         child1 = mutate_child(child1)
         child2 = mutate_child(child2)
@@ -128,21 +118,17 @@ def create_offsprings(mating_pool):
         children.append(child1)
         children.append(child2)
 
-    print("\nParents selected: \n")
-    for i in parents_selected:
-        print(i)
 
-    print("\nAfter Crossover: \n")
+    f.write("\nAfter Crossover: \n")
 
     for i in crossover_elem:
-        print(i)
+        write_file(i)
 
 
-    print("\nAfter Mutation: \n")
+    f.write("\nAfter Mutation: \n")
 
     for i in mutate_elem:
-        print(i)
-
+        write_file(i)
 
     # print("\n Children:\n", children)
     return children
@@ -156,8 +142,6 @@ def create_gen(offsprings, fitness):
     child_fitness = calculate_fitness(offsprings)
 
     new_pop = np.concatenate((fitness, child_fitness))
-
-    np.random.shuffle(new_pop)
 
     # sort and get first NUM_POPULATION elements
     new_pop = new_pop[np.argsort(new_pop[:,-1])][:NUM_POPULATION]
