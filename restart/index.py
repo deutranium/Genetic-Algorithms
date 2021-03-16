@@ -85,19 +85,14 @@ while(input() != "NO"):
             print(j, end=", ")
         print("],")
     
-    # print(population.shape)
-    # print(fitness.shape)
     
     mating_pool = select_mating_pool(fitness)
 
     f.write("\nAfter Selection: \n")
     for i in mating_pool:
-        write_file(mating_pool[:-3])
-    # print("Mating Pool: ")
-    # print(mating_pool)
+        write_file(i[:-3])
 
     offsprings = create_offsprings(mating_pool)
-    # print("Offsprings: ", offsprings)
 
 
     new_gen = create_gen(np.array(offsprings), fitness)

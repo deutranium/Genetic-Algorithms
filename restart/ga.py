@@ -29,12 +29,8 @@ def calculate_fitness(population):
 
 def select_mating_pool(fit_pop):
     # gets the best MATING_POOL_SIZE number of elements for the mating pool
-    # print()
-    # print(fit_pop)
-    # print()
+
     mating_pool = fit_pop[:MATING_POOL_SIZE]
-    # print("!!!!!!!!!!")
-    # print(mating_pool)
 
     return mating_pool
 
